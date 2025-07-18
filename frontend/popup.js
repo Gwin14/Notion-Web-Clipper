@@ -59,6 +59,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   clipBtn.onclick = async () => {
     const databaseId = dbSelect.value;
+    const categoria = document.getElementById("categoria").value.trim();
+    const tagsRaw = document.getElementById("tags").value.trim();
+    const notas = document.getElementById("notas").value.trim();
+
+    const tags = tagsRaw
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag !== "");
 
     if (!databaseId) {
       status.textContent = "Escolha uma database primeiro.";
@@ -100,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
         async (results) => {
           const data = results[0].result;
 
-          const pageData = {
+          let pageData = {
             parent: { database_id: databaseId },
             icon: {
               type: "external",
@@ -110,34 +118,54 @@ document.addEventListener("DOMContentLoaded", () => {
                   : new URL(data.favicon, data.url).href,
               },
             },
-            cover: {
-              type: "external",
-              external: {
-                url: data.ogImage || "",
-              },
-            },
+            cover: data.ogImage
+              ? {
+                  type: "external",
+                  external: { url: data.ogImage },
+                }
+              : undefined,
             properties: {
               Nome: {
                 title: [
                   {
-                    text: {
-                      content: data.title,
-                    },
+                    text: { content: data.title },
                   },
                 ],
               },
               URL: {
                 url: data.url,
               },
-              Descrição: {
-                rich_text: [
-                  {
-                    text: {
-                      content: data.ogDesc,
+              Descrição: data.ogDesc
+                ? {
+                    rich_text: [
+                      {
+                        text: { content: data.ogDesc },
+                      },
+                    ],
+                  }
+                : undefined,
+              Categoria: categoria
+                ? {
+                    select: {
+                      name: categoria,
                     },
-                  },
-                ],
-              },
+                  }
+                : undefined,
+              Tags:
+                tags.length > 0
+                  ? {
+                      multi_select: tags.map((tag) => ({ name: tag })),
+                    }
+                  : undefined,
+              Notas: notas
+                ? {
+                    rich_text: [
+                      {
+                        text: { content: notas },
+                      },
+                    ],
+                  }
+                : undefined,
             },
             children: [
               {
@@ -156,6 +184,15 @@ document.addEventListener("DOMContentLoaded", () => {
               },
             ],
           };
+
+          // Remove propriedades undefined antes de enviar
+          pageData.properties = Object.fromEntries(
+            Object.entries(pageData.properties).filter(
+              ([, v]) => v !== undefined
+            )
+          );
+
+          if (!pageData.cover) delete pageData.cover;
 
           const res = await fetch("https://api.notion.com/v1/pages", {
             method: "POST",
