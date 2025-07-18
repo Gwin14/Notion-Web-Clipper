@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Notion Clipper</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 1em;
+        width: 250px;
+      }
+      button,
+      select {
+        margin-top: 1em;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Notion Web Clipper</h3>
+    <button id="auth">Autenticar com Notion</button>
+
+    <label for="databaseSelect">Escolha uma database:</label>
+    <select id="databaseSelect"></select>
+
+    <button id="clip" disabled>Salvar Página</button>
+    <div id="status"></div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <script>
+      if (window.opener) {
+        window.opener.postMessage(
+          { type: "NOTION_TOKEN", token: "{{ access_token }}" },
+          "*"
+        );
+        window.close();
+      } else {
+        document.body.innerText =
+          "Autenticação concluída. Pode fechar esta aba.";
+      }
+    </script>
+  </body>
+</html>

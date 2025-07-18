@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Notion Web Clipper",
+  "version": "1.0",
+  "description": "Salve páginas diretamente no Notion",
+  "permissions": ["storage", "tabs", "scripting"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["auth_complete.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
