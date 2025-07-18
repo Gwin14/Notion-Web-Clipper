@@ -67,40 +67,115 @@ document.addEventListener("DOMContentLoaded", () => {
 
     chrome.storage.local.set({ notion_database_id: databaseId });
 
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
       const tab = tabs[0];
 
-      fetch("https://api.notion.com/v1/pages", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-          "Notion-Version": "2022-06-28",
-        },
-        body: JSON.stringify({
-          parent: { database_id: databaseId },
-          properties: {
-            Nome: {
-              title: [
-                {
-                  text: {
-                    content: tab.title,
-                  },
-                },
-              ],
-            },
-            URL: {
-              url: tab.url,
-            },
+      chrome.scripting.executeScript(
+        {
+          target: { tabId: tab.id },
+          func: () => {
+            const ogImage =
+              document.querySelector("meta[property='og:image']")?.content ||
+              "";
+            const ogDesc =
+              document.querySelector("meta[property='og:description']")
+                ?.content ||
+              document.querySelector("meta[name='description']")?.content ||
+              "";
+            const favicon =
+              document.querySelector("link[rel~='icon']")?.href ||
+              "/favicon.ico";
+            const content = document.body.innerText.slice(0, 2000); // limita para não ultrapassar o limite
+
+            return {
+              title: document.title,
+              url: window.location.href,
+              ogImage,
+              ogDesc,
+              favicon,
+              content,
+            };
           },
-        }),
-      }).then((res) => {
-        if (res.ok) {
-          status.textContent = "Página salva com sucesso ✅";
-        } else {
-          status.textContent = "Erro ao salvar ❌";
+        },
+        async (results) => {
+          const data = results[0].result;
+
+          const pageData = {
+            parent: { database_id: databaseId },
+            icon: {
+              type: "external",
+              external: {
+                url: data.favicon.startsWith("http")
+                  ? data.favicon
+                  : new URL(data.favicon, data.url).href,
+              },
+            },
+            cover: {
+              type: "external",
+              external: {
+                url: data.ogImage || "",
+              },
+            },
+            properties: {
+              Nome: {
+                title: [
+                  {
+                    text: {
+                      content: data.title,
+                    },
+                  },
+                ],
+              },
+              URL: {
+                url: data.url,
+              },
+              Descrição: {
+                rich_text: [
+                  {
+                    text: {
+                      content: data.ogDesc,
+                    },
+                  },
+                ],
+              },
+            },
+            children: [
+              {
+                object: "block",
+                type: "paragraph",
+                paragraph: {
+                  rich_text: [
+                    {
+                      type: "text",
+                      text: {
+                        content: data.content,
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          };
+
+          const res = await fetch("https://api.notion.com/v1/pages", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              "Notion-Version": "2022-06-28",
+            },
+            body: JSON.stringify(pageData),
+          });
+
+          if (res.ok) {
+            status.textContent = "Página salva com sucesso ✅";
+          } else {
+            const err = await res.json();
+            console.error("Erro ao salvar:", err);
+            status.textContent = "Erro ao salvar ❌";
+          }
         }
-      });
+      );
     });
   };
 });
