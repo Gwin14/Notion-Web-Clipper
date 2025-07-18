@@ -5,14 +5,101 @@
     <title>Notion Clipper</title>
     <style>
       body {
-        font-family: sans-serif;
-        padding: 1em;
-        width: 250px;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f9fafb;
+        color: #1f2937;
+        padding: 20px;
+        width: 320px;
+        box-sizing: border-box;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgb(0 0 0 / 0.1);
       }
-      button,
-      select {
-        margin-top: 1em;
+
+      h3 {
+        margin-bottom: 20px;
+        font-weight: 700;
+        font-size: 1.4rem;
+        color: #111827;
+        text-align: center;
+      }
+
+      label {
+        display: block;
+        margin-top: 15px;
+        margin-bottom: 6px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #374151;
+      }
+
+      input[type="text"],
+      input[list],
+      select,
+      textarea {
         width: 100%;
+        padding: 10px 14px;
+        font-size: 1rem;
+        border: 1.8px solid #d1d5db;
+        border-radius: 8px;
+        background: white;
+        color: #111827;
+        transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        box-sizing: border-box;
+        resize: vertical;
+      }
+
+      input[type="text"]:focus,
+      input[list]:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 6px #2563ebaa;
+      }
+
+      textarea {
+        min-height: 80px;
+        font-family: inherit;
+      }
+
+      button {
+        margin-top: 25px;
+        width: 100%;
+        padding: 12px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        border: none;
+        border-radius: 10px;
+        background: #2563eb;
+        color: white;
+        cursor: pointer;
+        box-shadow: 0 6px 12px rgb(37 99 235 / 0.4);
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      button:disabled {
+        background: #9ca3af;
+        box-shadow: none;
+        cursor: not-allowed;
+        color: #e5e7eb;
+      }
+
+      button:not(:disabled):hover {
+        background-color: #1e40af;
+        box-shadow: 0 8px 15px rgb(30 64 175 / 0.6);
+      }
+
+      #status {
+        margin-top: 18px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        min-height: 22px;
+        text-align: center;
+        color: #10b981; /* verde para sucesso */
+      }
+
+      #status.error {
+        color: #ef4444; /* vermelho para erro */
       }
     </style>
   </head>
