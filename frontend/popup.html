@@ -5,31 +5,30 @@
     <title>Notion Clipper</title>
     <style>
       body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        background: #f9fafb;
-        color: #1f2937;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, "Helvetica Neue", sans-serif;
+        background: #ffffff;
+        color: #37352f;
         padding: 20px;
         width: 320px;
         box-sizing: border-box;
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgb(0 0 0 / 0.1);
       }
 
       h3 {
         margin-bottom: 20px;
-        font-weight: 700;
-        font-size: 1.4rem;
-        color: #111827;
+        font-weight: 600;
+        font-size: 1.2rem;
+        color: #2f3437;
         text-align: center;
       }
 
       label {
         display: block;
-        margin-top: 15px;
+        margin-top: 16px;
         margin-bottom: 6px;
-        font-weight: 600;
+        font-weight: 500;
         font-size: 0.9rem;
-        color: #374151;
+        color: #2f3437;
       }
 
       input[type="text"],
@@ -37,14 +36,14 @@
       select,
       textarea {
         width: 100%;
-        padding: 10px 14px;
-        font-size: 1rem;
-        border: 1.8px solid #d1d5db;
-        border-radius: 8px;
-        background: white;
-        color: #111827;
-        transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        padding: 9px 12px;
+        font-size: 0.95rem;
+        border: 1px solid #e1e1e1;
+        border-radius: 6px;
+        background: #fafafa;
+        color: #2f3437;
         box-sizing: border-box;
+        transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         resize: vertical;
       }
 
@@ -53,8 +52,9 @@
       select:focus,
       textarea:focus {
         outline: none;
-        border-color: #2563eb;
-        box-shadow: 0 0 6px #2563ebaa;
+        border-color: #a3a3a3;
+        background: #fff;
+        box-shadow: 0 0 0 1px #a3a3a3;
       }
 
       textarea {
@@ -63,43 +63,45 @@
       }
 
       button {
-        margin-top: 25px;
+        margin-top: 20px;
         width: 100%;
-        padding: 12px;
-        font-size: 1.1rem;
-        font-weight: 700;
-        border: none;
-        border-radius: 10px;
-        background: #2563eb;
-        color: white;
+        padding: 10px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        border: 1px solid #e1e1e1;
+        border-radius: 6px;
+        background: #f5f5f5;
+        color: #2f3437;
         cursor: pointer;
-        box-shadow: 0 6px 12px rgb(37 99 235 / 0.4);
-        transition: background-color 0.3s ease, box-shadow 0.3s ease;
-      }
-
-      button:disabled {
-        background: #9ca3af;
-        box-shadow: none;
-        cursor: not-allowed;
-        color: #e5e7eb;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
       }
 
       button:not(:disabled):hover {
-        background-color: #1e40af;
-        box-shadow: 0 8px 15px rgb(30 64 175 / 0.6);
+        background-color: #ebebeb;
+        border-color: #cfcfcf;
+      }
+
+      button:disabled {
+        background: #f0f0f0;
+        border-color: #e5e5e5;
+        cursor: not-allowed;
+        color: #bfbfbf;
       }
 
       #status {
-        margin-top: 18px;
-        font-weight: 600;
-        font-size: 0.95rem;
-        min-height: 22px;
+        margin-top: 16px;
+        font-size: 0.85rem;
+        font-weight: 500;
         text-align: center;
-        color: #10b981; /* verde para sucesso */
+        color: #2f3437;
       }
 
       #status.error {
-        color: #ef4444; /* vermelho para erro */
+        color: #e03e3e;
+      }
+
+      #status.success {
+        color: #0f7b6c;
       }
     </style>
   </head>
