@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-_q9y_b=prk2hu$l5j97l15w!arqbgg-$^9i3!ss$=w4bb4^e$x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['notion-web-clipper-fgws.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
