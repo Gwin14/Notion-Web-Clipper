@@ -6,6 +6,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let token = null;
 
+  const openrouterInput = document.getElementById("openrouterKey");
+  const resumoTextArea = document.getElementById("resumo");
+  let openrouterKey = null;
+
+  chrome.storage.local.get(["openrouter_key"], (result) => {
+    if (result.openrouter_key) {
+      openrouterKey = result.openrouter_key;
+      openrouterInput.value = openrouterKey;
+    }
+  });
+
+  openrouterInput.addEventListener("change", () => {
+    openrouterKey = openrouterInput.value.trim();
+    chrome.storage.local.set({ openrouter_key: openrouterKey });
+  });
+
   chrome.storage.local.get(
     ["notion_token", "notion_database_id"],
     async (result) => {
@@ -108,6 +124,49 @@ document.addEventListener("DOMContentLoaded", () => {
         async (results) => {
           const data = results[0].result;
 
+          let iaResumo = "";
+
+          if (openrouterKey) {
+            try {
+              const prompt = `Resuma o conteúdo da seguinte página:\n\nTítulo: ${data.title}\n\nURL: ${data.url}\n\nDescrição: ${data.ogDesc}\n\nTexto:\n${data.content}`;
+
+              const iaRes = await fetch(
+                "https://openrouter.ai/api/v1/chat/completions",
+                {
+                  method: "POST",
+                  headers: {
+                    Authorization: `Bearer ${openrouterKey}`,
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    model: "openai/gpt-3.5-turbo",
+                    messages: [
+                      {
+                        role: "system",
+                        content:
+                          "Você é um assistente que gera resumos curtos e informativos.",
+                      },
+                      {
+                        role: "user",
+                        content: prompt,
+                      },
+                    ],
+                    max_tokens: 300,
+                  }),
+                }
+              );
+
+              const iaJson = await iaRes.json();
+              iaResumo = iaJson.choices?.[0]?.message?.content || "";
+
+              resumoTextArea.value = iaResumo;
+            } catch (e) {
+              console.error("Erro ao gerar resumo com IA:", e);
+              iaResumo = "";
+              resumoTextArea.value = "Erro ao gerar resumo";
+            }
+          }
+
           let pageData = {
             parent: { database_id: databaseId },
             icon: {
@@ -162,6 +221,15 @@ document.addEventListener("DOMContentLoaded", () => {
                     rich_text: [
                       {
                         text: { content: notas },
+                      },
+                    ],
+                  }
+                : undefined,
+              Resumo: iaResumo
+                ? {
+                    rich_text: [
+                      {
+                        text: { content: iaResumo },
                       },
                     ],
                   }

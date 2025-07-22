@@ -32,6 +32,7 @@
       }
 
       input[type="text"],
+      input[type="password"],
       input[list],
       select,
       textarea {
@@ -48,6 +49,7 @@
       }
 
       input[type="text"]:focus,
+      input[type="password"]:focus,
       input[list]:focus,
       select:focus,
       textarea:focus {
@@ -121,6 +123,12 @@
 
     <label for="notas">Notas:</label>
     <textarea id="notas"></textarea>
+
+    <label for="openrouterKey">OpenRouter API Key:</label>
+    <input type="password" id="openrouterKey" placeholder="sk-..." />
+
+    <label for="resumo">Resumo da IA:</label>
+    <textarea id="resumo" disabled>Gerando resumo...</textarea>
 
     <button id="clip" disabled>Salvar Página</button>
     <div id="status"></div>
