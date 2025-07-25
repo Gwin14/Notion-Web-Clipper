@@ -68,8 +68,46 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   );
 
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === "local" && changes.notion_token) {
+      token = changes.notion_token.newValue;
+      if (token) {
+        status.textContent = "Autenticado ✅";
+        carregarDatabases();
+      }
+    }
+  });
+
+  async function carregarDatabases() {
+    const res = await fetch("https://api.notion.com/v1/search", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "Notion-Version": "2022-06-28",
+      },
+      body: JSON.stringify({
+        filter: { property: "object", value: "database" },
+      }),
+    });
+    if (!res.ok) {
+      status.textContent = "Erro ao carregar databases";
+      return;
+    }
+    const data = await res.json();
+    dbSelect.innerHTML = "";
+    data.results.forEach((db) => {
+      const nameProp = db.title?.[0]?.plain_text || "Sem título";
+      const option = document.createElement("option");
+      option.value = db.id;
+      option.textContent = nameProp;
+      dbSelect.appendChild(option);
+    });
+  }
+
   authBtn.onclick = () => {
-    const authUrl = "http://localhost:8000/auth/login/";
+    const authUrl = "https://notion-web-clipper-fgws.onrender.com/auth/login/";
+    // const authUrl = "http://localhost:8000/auth/login/";
     window.open(authUrl, "_blank");
   };
 

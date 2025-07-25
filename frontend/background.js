@@ -14,6 +14,16 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === "store_token") {
+    chrome.storage.local.set({ notion_token: message.token }, () => {
+      console.log("Token salvo com sucesso:", message.token);
+      sendResponse({ success: true });
+    });
+    return true; // mantém o canal aberto para sendResponse
+  }
+});
+
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "saveSelectionToNotion") {
     // Captura o favicon da aba ativa
